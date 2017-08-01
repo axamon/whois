@@ -169,12 +169,14 @@ func ReturnISPandStore(ip string) (isp string) {
 		os.Exit(0)
 	}
 
+	//verifiche che sia un IPv4 corretto
 	testInput := net.ParseIP(ip)
 	if testInput.To4() == nil {
 		fmt.Printf("%v non è un IPv4 valido\n", ip)
 		os.Exit(1)
 	}
 
+	//cerca nella mappa listaipdafile se c'è un valore associato all'ip, se è vuoto non c'è
 	if len(listaipdafile[ip]) != 0 {
 		isp = listaipdafile[ip]
 		//fmt.Println(listaipdafile[ip])
