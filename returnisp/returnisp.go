@@ -10,6 +10,7 @@ import (
 	"net"
 	"net/http"
 	"os"
+	"strings"
 	"sync"
 )
 
@@ -175,9 +176,10 @@ func ReturnISPandStore(ip string) (isp, country string) {
 
 	//cerca nella mappa listaipdafile se c'è un valore associato all'ip, se è vuoto non c'è
 	if len(listaipdafile[ip]) != 0 {
-		isp = listaipdafile[ip]
+		isp = strings.Fields(listaipdafile[ip])[0]
+		country = strings.Fields(listaipdafile[ip])[1]
 		//fmt.Println(listaipdafile[ip])
-		//fmt.Println(time.Since(inizio), "da file")
+		//fmt.Println(time.Since(inizio), "da file", isp, "e", country)
 		return isp, country
 	}
 
