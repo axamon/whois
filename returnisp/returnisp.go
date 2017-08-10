@@ -70,7 +70,7 @@ func readmapfromgob(gobfile string) (res map[string]string) {
 }
 
 //ReturnISP restituisce l'Internet Servie Provider dell'ip passato utilizzando le API del RIPE
-func ReturnISP(ip string) (isp string) {
+func ReturnISP(ip string) (isp, country string) {
 
 	type ripe3 struct {
 		Service struct {
@@ -135,28 +135,25 @@ func ReturnISP(ip string) (isp string) {
 			panic(err)
 		}
 
-		var limit int8
-		limit = 0
-		//Siccome esistono più campi chiamati descr in questo modo prelevo solo il primo trovato
 		for _, u := range data.Objects.Object {
 			for _, l := range u.Attributes.Attribute {
-				if limit > 0 {
-					break
-				}
-				if l.Name == "descr" {
+				if l.Name == "netname" {
 					//fmt.Println(l.Value)
 					isp = l.Value
-					limit++
+				}
+				if l.Name == "country" {
+					//fmt.Println(l.Value)
+					country = l.Value
 				}
 			}
 		}
 
 	}
-	return isp
+	return isp, country
 }
 
 //ReturnISPandStore recupera il ISP dell'ip e lo salva nel file di appoggio gobfile
-func ReturnISPandStore(ip string) (isp string) {
+func ReturnISPandStore(ip string) (isp, country string) {
 	listaipdafile := make(map[string]string)
 
 	listaipdafile = readmapfromgob(gobfile)
@@ -181,13 +178,13 @@ func ReturnISPandStore(ip string) (isp string) {
 		isp = listaipdafile[ip]
 		//fmt.Println(listaipdafile[ip])
 		//fmt.Println(time.Since(inizio), "da file")
-		return isp
+		return isp, country
 	}
 
 	// var wg sync.WaitGroup
 	// wg.Add(1)
 	// go func() {
-	isp = ReturnISP(ip)
+	isp, country = ReturnISP(ip)
 	//fmt.Println(isp)
 	listaipdafile[ip] = isp
 	savemapgob(listaipdafile, &m)
@@ -195,5 +192,5 @@ func ReturnISPandStore(ip string) (isp string) {
 	// 	wg.Done()
 	// }()
 	// wg.Wait()
-	return isp
+	return isp, country
 }

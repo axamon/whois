@@ -8,12 +8,12 @@ import (
 	"whois/returnisp"
 )
 
-//Functuion runner permits to get the rusults concorrency
+//Functuion runner permits to get the rusults concorrently
 func runner(ipaddr string, wg *sync.WaitGroup) {
 	//recuper il ISP dell' ip
-	isp := returnisp.ReturnISPandStore(ipaddr)
+	isp, country := returnisp.ReturnISPandStore(ipaddr)
 	//scrive a video l'ip e il sup ISP
-	fmt.Println(ipaddr, isp)
+	fmt.Println(ipaddr, isp, country)
 	//decrementa di una unità il contatore del waitgroup wg
 	wg.Done()
 }
@@ -25,7 +25,7 @@ func main() {
 	//Creates a wait group to manage Goroutines
 	var wg sync.WaitGroup
 
-	//For each ip passed ass argument a Goroutin of func runner is created
+	//For each ip passed as argument a Goroutin of func runner is created
 	for _, ipaddr := range ip {
 		//Adds one counter to the waitgroup for each goroutine created
 		wg.Add(1)
