@@ -186,7 +186,7 @@ func ReturnISPandStore(ip string) (isp, country string) {
 	// go func() {
 	isp, country = ReturnISP(ip)
 	//fmt.Println(isp)
-	listaipdafile[ip] = isp
+	listaipdafile[ip] = isp + " " + country
 	savemapgob(listaipdafile, &m)
 	//fmt.Println(time.Since(inizio), "da Api RIPE")
 	// 	wg.Done()
